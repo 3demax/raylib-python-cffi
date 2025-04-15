@@ -33,8 +33,8 @@ def check_raylib_installed():
 def check_SDL_installed():
     return subprocess.run(['pkg-config', '--exists', 'sdl2'], text=True, stdout=subprocess.PIPE).returncode == 0
 
-def get_the_include_path():
-    return subprocess.run(['pkg-config', '--variable=includedir', 'raylib'], text=True,
+def get_the_include_path(libname='raylib'):
+    return subprocess.run(['pkg-config', '--variable=includedir', libname], text=True,
                           stdout=subprocess.PIPE).stdout.strip()
 
 
@@ -129,13 +129,13 @@ def build_unix():
     #include "raymath.h"
     """
 
-    glfw3_h = get_the_include_path() + "/GLFW/glfw3.h"
+    glfw3_h = get_the_include_path("glfw3") + "/GLFW/glfw3.h"
     if RAYLIB_PLATFORM=="Desktop" and check_header_exists(glfw3_h):
         ffi_includes += """
         #include "GLFW/glfw3.h"
         """
 
-    raygui_h = get_the_include_path() + "/raygui.h"
+    raygui_h = get_the_include_path("raygui") + "/raygui.h"
     if check_header_exists(raygui_h):
         ffi_includes += """
         #define RAYGUI_IMPLEMENTATION
@@ -143,7 +143,7 @@ def build_unix():
         #include "raygui.h"
         """
 
-    physac_h = get_the_include_path() + "/physac.h"
+    physac_h = get_the_include_path("physac") + "/physac.h"
     if check_header_exists(physac_h):
         ffi_includes += """
         #define PHYSAC_IMPLEMENTATION
